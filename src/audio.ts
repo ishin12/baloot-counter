@@ -33,7 +33,7 @@ function speakFallback(key: SoundKey) {
 
 export function playCallout(key: SoundKey, enabled: boolean) {
   if (!enabled) return
-  const audio = new Audio(`/sounds/${key}.mp3`)
+  const audio = new Audio(`${import.meta.env.BASE_URL}sounds/${key}.mp3`)
   let usedFallback = false
   const fallback = () => {
     if (usedFallback) return
