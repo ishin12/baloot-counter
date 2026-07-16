@@ -1,7 +1,8 @@
 const CACHE_NAME = 'baloot-counter-v1'
+const BASE_PATH = new URL('./', self.location.href).pathname
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['/', '/manifest.webmanifest', '/icon.svg'])))
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll([BASE_PATH, `${BASE_PATH}manifest.webmanifest`, `${BASE_PATH}icon.svg`])))
   self.skipWaiting()
 })
 
@@ -22,7 +23,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy))
           return response
         })
-        .catch(() => (event.request.mode === 'navigate' ? caches.match('/') : cached))
+        .catch(() => (event.request.mode === 'navigate' ? caches.match(BASE_PATH) : cached))
       return cached || network
     }),
   )
