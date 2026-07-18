@@ -1,4 +1,4 @@
-const CACHE_NAME = 'baloot-counter-v2'
+const CACHE_NAME = 'baloot-counter-v3'
 const BASE_PATH = new URL('./', self.location.href).pathname
 
 self.addEventListener('install', (event) => {

@@ -64,6 +64,14 @@ export default function App() {
     [0, 0],
   ), [rounds])
 
+  const history = useMemo(() => {
+    let running: [number, number] = [0, 0]
+    return rounds.map((round, index) => {
+      running = [running[0] + round.points[0], running[1] + round.points[1]]
+      return { ...round, number: index + 1, totals: [...running] as [number, number] }
+    }).reverse()
+  }, [rounds])
+
   useEffect(() => {
     localStorage.setItem('baloot-simple-rounds-v1', JSON.stringify(rounds))
   }, [rounds])
@@ -135,6 +143,26 @@ export default function App() {
         </div>
         <button className="save" onClick={saveRound}>سجل</button>
         <small>{remaining > 0 ? `باقي ${remaining} على نهاية الصكة` : 'وصلتم ١٥٢ — خلصت الصكة'}</small>
+      </section>
+
+      <section className="history" aria-label="سجل النقاط">
+        <header>
+          <b>سجل النقاط</b>
+          <span><i>لنا</i><i>لهم</i></span>
+        </header>
+        {history.length === 0 ? (
+          <p>أول قيد بيظهر هنا</p>
+        ) : (
+          <ol>
+            {history.map((round) => (
+              <li key={round.id}>
+                <span className="round-number">{round.number}</span>
+                <span><small>+{round.points[0]}</small><b>{round.totals[0]}</b></span>
+                <span><small>+{round.points[1]}</small><b>{round.totals[1]}</b></span>
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
 
       <footer className="bottom-actions">
