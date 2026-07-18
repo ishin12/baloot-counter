@@ -1,14 +1,14 @@
 {
   "name": "قيد البلوت",
   "short_name": "قيد",
-  "description": "حاسبة وقيد بلوت للطاولة الحقيقية",
+  "description": "عداد بلوت بسيط للطاولة الحقيقية",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#08142c",
-  "theme_color": "#0b1733",
+  "background_color": "#121313",
+  "theme_color": "#121313",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
