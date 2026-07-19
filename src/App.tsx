@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 type Team = 0 | 1
+type Tab = 'score' | 'tap'
 
 interface Round {
   id: string
@@ -15,6 +16,15 @@ function readRounds(): Round[] {
     return saved ? JSON.parse(saved) as Round[] : []
   } catch {
     return []
+  }
+}
+
+function readTapCounts(): [number, number] {
+  try {
+    const saved = localStorage.getItem('baloot-tap-counts-v1')
+    return saved ? JSON.parse(saved) as [number, number] : [0, 0]
+  } catch {
+    return [0, 0]
   }
 }
 
@@ -52,8 +62,19 @@ function ConfirmReset({ onCancel, onConfirm }: { onCancel: () => void; onConfirm
   )
 }
 
+function TabSwitch({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
+  return (
+    <nav className="tab-switch" aria-label="أقسام التطبيق">
+      <button className={active === 'score' ? 'active' : ''} onClick={() => onChange('score')}>القيد</button>
+      <button className={active === 'tap' ? 'active' : ''} onClick={() => onChange('tap')}>العداد</button>
+    </nav>
+  )
+}
+
 export default function App() {
+  const [tab, setTab] = useState<Tab>('score')
   const [rounds, setRounds] = useState<Round[]>(readRounds)
+  const [tapCounts, setTapCounts] = useState<[number, number]>(readTapCounts)
   const [entry, setEntry] = useState<[string, string]>(['', ''])
   const [activeTeam, setActiveTeam] = useState<Team>(0)
   const [confirmReset, setConfirmReset] = useState(false)
@@ -75,6 +96,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('baloot-simple-rounds-v1', JSON.stringify(rounds))
   }, [rounds])
+
+  useEffect(() => {
+    localStorage.setItem('baloot-tap-counts-v1', JSON.stringify(tapCounts))
+  }, [tapCounts])
 
   const focusTeam = (team: Team) => {
     setActiveTeam(team)
@@ -101,11 +126,37 @@ export default function App() {
 
   const remaining = Math.max(0, TARGET - Math.max(...totals))
 
+  if (tab === 'tap') {
+    return (
+      <main className="tap-counter" dir="rtl">
+        <header className="tap-topbar">
+          <button className="tap-reset" onClick={() => setTapCounts([0, 0])} disabled={tapCounts[0] === 0 && tapCounts[1] === 0}>تصفير</button>
+          <TabSwitch active={tab} onChange={setTab} />
+          <span aria-hidden="true" />
+        </header>
+        <section className="tap-sides" aria-label="عداد بسيط">
+          {([0, 1] as Team[]).map((team) => (
+            <button
+              key={team}
+              className={`tap-side tap-side-${team}`}
+              aria-label={`${team === 0 ? 'لنا' : 'لهم'} ${tapCounts[team]}، اضغط لزيادة واحد`}
+              onClick={() => setTapCounts((current) => team === 0 ? [current[0] + 1, current[1]] : [current[0], current[1] + 1])}
+            >
+              <span>{team === 0 ? 'لنا' : 'لهم'}</span>
+              <strong>{tapCounts[team]}</strong>
+              <small>اضغط +١</small>
+            </button>
+          ))}
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="counter" dir="rtl">
       <header className="topbar">
         <button className="new-game" onClick={() => setConfirmReset(true)} disabled={!rounds.length}>صكة جديدة</button>
-        <div className="logo" aria-label="قيد البلوت"><i>ق</i><span>قيد</span></div>
+        <TabSwitch active={tab} onChange={setTab} />
         <div className="round-count">{rounds.length ? `${rounds.length} جولة` : 'جاهزين'}</div>
       </header>
 
