@@ -136,16 +136,27 @@ export default function App() {
         </header>
         <section className="tap-sides" aria-label="عداد بسيط">
           {([0, 1] as Team[]).map((team) => (
-            <button
+            <section
               key={team}
               className={`tap-side tap-side-${team}`}
-              aria-label={`${team === 0 ? 'لنا' : 'لهم'} ${tapCounts[team]}، اضغط لزيادة واحد`}
-              onClick={() => setTapCounts((current) => team === 0 ? [current[0] + 1, current[1]] : [current[0], current[1] + 1])}
+              aria-label={`${team === 0 ? 'لنا' : 'لهم'} ${tapCounts[team]}`}
             >
               <span>{team === 0 ? 'لنا' : 'لهم'}</span>
               <strong>{tapCounts[team]}</strong>
-              <small>اضغط +١</small>
-            </button>
+              <div className="tap-controls">
+                <button
+                  className="tap-minus"
+                  aria-label={`أنقص ${team === 0 ? 'لنا' : 'لهم'}`}
+                  disabled={tapCounts[team] === 0}
+                  onClick={() => setTapCounts((current) => team === 0 ? [Math.max(0, current[0] - 1), current[1]] : [current[0], Math.max(0, current[1] - 1)])}
+                >−</button>
+                <button
+                  className="tap-plus"
+                  aria-label={`زد ${team === 0 ? 'لنا' : 'لهم'}`}
+                  onClick={() => setTapCounts((current) => team === 0 ? [current[0] + 1, current[1]] : [current[0], current[1] + 1])}
+                >+</button>
+              </div>
+            </section>
           ))}
         </section>
       </main>
