@@ -272,13 +272,11 @@ button:disabled { opacity: 0.28; }
 .tap-side {
   position: relative;
   min-width: 0;
-  border: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #fffdf7;
-  cursor: pointer;
   user-select: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -293,8 +291,32 @@ button:disabled { opacity: 0.28; }
   line-height: .8;
   letter-spacing: -.05em;
 }
-.tap-side small { position: absolute; bottom: max(1.5rem, env(safe-area-inset-bottom)); font-size: .72rem; font-weight: 700; opacity: .62; }
-.tap-side:active { filter: brightness(.9); }
+.tap-controls {
+  position: absolute;
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+}
+.tap-controls button {
+  width: clamp(3.7rem, 16vw, 5rem);
+  height: clamp(3.7rem, 16vw, 5rem);
+  border: 2px solid rgba(255,255,255,.78);
+  border-radius: 50%;
+  background: rgba(20,20,20,.13);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 2.25rem;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.tap-controls button:active { background: rgba(20,20,20,.3); transform: scale(.94); }
+.tap-controls button:disabled { opacity: .25; }
+.tap-controls .tap-plus { background: rgba(255,255,255,.92); color: #282929; }
 
 @media (max-height: 650px) {
   .topbar { min-height: 4.2rem; }
@@ -305,6 +327,7 @@ button:disabled { opacity: 0.28; }
   .save { min-height: 3.2rem; }
   .bottom-actions { min-height: 5.5rem; }
   .tap-topbar { min-height: 4.2rem; }
+  .tap-controls { bottom: .8rem; }
 }
 
 @media (min-width: 760px) {
